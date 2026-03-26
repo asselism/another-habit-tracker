@@ -70,7 +70,7 @@ export default function AuthGate({ isAuthed, setIsAuthed, onAuth }) {
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-card/50 text-gray-400 hover:text-gray-200 hover:bg-surface-hover transition-colors text-sm"
           >
             <Lock size={14} />
-            Connect GitHub
+            Staff Only
           </button>
         )}
       </div>
