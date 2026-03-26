@@ -38,7 +38,7 @@ export const HABITS = [
   {
     id: 'kayaking',
     name: 'Kayaking',
-    unit: 'min',
+    unit: 'voyages',
     icon: Waves,
     color: '#4cc9f0',
     category: 'Hobbies',
