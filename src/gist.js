@@ -1,4 +1,17 @@
 const GIST_FILE = 'habits.json'
+export const HABITS_GIST_ID = '9f913c9d378f732a63f7f31368b1f74b'
+const QUOTES_GIST_ID = 'd861a7b8ce30a52344273e9ecaafe6f8'
+
+export async function fetchRandomQuote() {
+  const res = await fetch(`https://api.github.com/gists/${QUOTES_GIST_ID}`, {
+    headers: { Accept: 'application/vnd.github.v3+json' },
+  })
+  if (!res.ok) return null
+  const gist = await res.json()
+  const file = Object.values(gist.files)[0]
+  const quotes = JSON.parse(file.content)
+  return quotes[Math.floor(Math.random() * quotes.length)]
+}
 
 export async function readGist(gistId) {
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {

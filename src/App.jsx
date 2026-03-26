@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
-import { HABITS } from './habitConfig'
-import { readGist, writeGist } from './gist'
+import { HABITS, CATEGORIES } from './habitConfig'
+import { readGist, writeGist, fetchRandomQuote, HABITS_GIST_ID } from './gist'
 import {
   getWeekDates,
   getMonthDates,
@@ -15,17 +15,6 @@ import QuickEntry from './components/QuickEntry'
 import AuthGate from './components/AuthGate'
 import DataManager from './components/DataManager'
 
-const GIST_ID_KEY = 'habit-tracker-gist-id'
-
-function getGistId() {
-  // Check URL hash first (for shareable links like #gist=abc123)
-  const hash = window.location.hash
-  const match = hash.match(/gist=([a-f0-9]+)/)
-  if (match) return match[1]
-  // Fall back to localStorage
-  return localStorage.getItem(GIST_ID_KEY)
-}
-
 export default function App() {
   const [data, setData] = useState({})
   const [isAuthed, setIsAuthed] = useState(false)
@@ -34,22 +23,21 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [hasGist, setHasGist] = useState(!!getGistId())
+  const [quote, setQuote] = useState('')
 
   const tokenRef = useRef(null)
-  const gistIdRef = useRef(getGistId())
 
   const dates = view === 'week' ? getWeekDates(refDate) : getMonthDates(refDate)
   const label = view === 'week' ? getWeekLabel(dates) : getMonthLabel(refDate)
 
+  // Load random quote on mount
+  useEffect(() => {
+    fetchRandomQuote().then(q => { if (q) setQuote(q) })
+  }, [])
+
   // Load data from gist on mount
   useEffect(() => {
-    const gistId = gistIdRef.current
-    if (!gistId) {
-      setLoading(false)
-      return
-    }
-    readGist(gistId)
+    readGist(HABITS_GIST_ID)
       .then(setData)
       .catch(() => setError('Failed to load data'))
       .finally(() => setLoading(false))
@@ -58,15 +46,14 @@ export default function App() {
   // Save to gist (debounced)
   const saveTimeout = useRef(null)
   const saveToGist = useCallback((newData) => {
-    const gistId = gistIdRef.current
     const token = tokenRef.current
-    if (!gistId || !token) return
+    if (!token) return
 
     clearTimeout(saveTimeout.current)
     saveTimeout.current = setTimeout(async () => {
       setSaving(true)
       try {
-        await writeGist(gistId, token, newData)
+        await writeGist(HABITS_GIST_ID, token, newData)
         setError('')
       } catch {
         setError('Failed to save')
@@ -101,18 +88,8 @@ export default function App() {
     })
   }
 
-  function handleAuth(gistId, token) {
-    gistIdRef.current = gistId
+  function handleAuth(token) {
     tokenRef.current = token
-    setHasGist(true)
-    // Update URL hash for shareable link
-    window.location.hash = `gist=${gistId}`
-    // Reload data
-    setLoading(true)
-    readGist(gistId)
-      .then(setData)
-      .catch(() => setError('Failed to load data'))
-      .finally(() => setLoading(false))
   }
 
   function navigate(direction) {
@@ -132,7 +109,10 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-gray-100 tracking-tight">Habits</h1>
+              <div>
+                <h1 className="text-xl font-bold text-gray-100 tracking-tight">another habit tracker</h1>
+                {quote && <p className="text-gray-500 text-xs italic mt-0.5">"{quote}"</p>}
+              </div>
               {saving && <Loader2 size={14} className="text-accent-blue animate-spin" />}
               {error && <span className="text-red-400 text-xs">{error}</span>}
             </div>
@@ -143,7 +123,7 @@ export default function App() {
           </div>
 
           {/* View controls */}
-          {hasGist && (
+          {!loading && (
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-1 bg-surface-card rounded-lg p-0.5">
                 {['week', 'month'].map(v => (
@@ -192,23 +172,29 @@ export default function App() {
           <div className="flex items-center justify-center py-20">
             <Loader2 size={24} className="text-accent-blue animate-spin" />
           </div>
-        ) : !hasGist ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-gray-400 text-lg mb-2">No data source connected</p>
-            <p className="text-gray-600 text-sm">Click "Connect GitHub" above to link a Gist</p>
-          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {HABITS.map(habit => (
-              <HabitCard
-                key={habit.id}
-                habit={habit}
-                data={data[habit.id] || {}}
-                dates={dates}
-                isAuthed={isAuthed}
-                onUpdate={updateEntry}
-              />
-            ))}
+          <div className="space-y-10">
+            {CATEGORIES.map(category => {
+              const categoryHabits = HABITS.filter(h => h.category === category)
+              if (!categoryHabits.length) return null
+              return (
+                <section key={category}>
+                  <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{category}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {categoryHabits.map(habit => (
+                      <HabitCard
+                        key={habit.id}
+                        habit={habit}
+                        data={data[habit.id] || {}}
+                        dates={dates}
+                        isAuthed={isAuthed}
+                        onUpdate={updateEntry}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )
+            })}
           </div>
         )}
       </main>

@@ -1,4 +1,6 @@
-import { Moon, Code, BookOpen, Music, Coffee } from 'lucide-react'
+import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell } from 'lucide-react'
+
+export const CATEGORIES = ['Health', 'Hobbies', 'Learning']
 
 export const HABITS = [
   {
@@ -7,23 +9,15 @@ export const HABITS = [
     unit: 'hours',
     icon: Moon,
     color: '#7b2ff7',
-    section: 'Rest',
+    category: 'Health',
   },
   {
-    id: 'code',
-    name: 'Lines of Code',
-    unit: 'lines',
-    icon: Code,
-    color: '#4cc9f0',
-    section: 'Code',
-  },
-  {
-    id: 'articles',
-    name: 'Articles Read',
-    unit: 'articles',
-    icon: BookOpen,
-    color: '#4ade80',
-    section: 'Learning',
+    id: 'solidcore',
+    name: '[solidcore]',
+    unit: 'sessions',
+    icon: Dumbbell,
+    color: '#f43f5e',
+    category: 'Health',
   },
   {
     id: 'dance',
@@ -31,7 +25,31 @@ export const HABITS = [
     unit: 'min',
     icon: Music,
     color: '#f72585',
-    section: 'Movement',
+    category: 'Hobbies',
+  },
+  {
+    id: 'fit_checks',
+    name: 'Fit Checks',
+    unit: 'fits',
+    icon: Shirt,
+    color: '#facc15',
+    category: 'Hobbies',
+  },
+  {
+    id: 'kayaking',
+    name: 'Kayaking',
+    unit: 'min',
+    icon: Waves,
+    color: '#4cc9f0',
+    category: 'Hobbies',
+  },
+  {
+    id: 'articles',
+    name: 'Articles Read',
+    unit: 'articles',
+    icon: BookOpen,
+    color: '#4ade80',
+    category: 'Learning',
   },
   {
     id: 'coffee_chats',
@@ -39,6 +57,6 @@ export const HABITS = [
     unit: 'chats',
     icon: Coffee,
     color: '#fb923c',
-    section: 'Social',
+    category: 'Learning',
   },
 ]

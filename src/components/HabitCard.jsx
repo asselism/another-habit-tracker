@@ -52,7 +52,7 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
           </div>
           <div>
             <h3 className="text-gray-100 font-semibold text-sm">{habit.name}</h3>
-            <p className="text-gray-500 text-xs">{habit.section}</p>
+            <p className="text-gray-500 text-xs">{habit.unit}</p>
           </div>
         </div>
         <div className="text-right">
