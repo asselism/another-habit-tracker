@@ -111,7 +111,7 @@ export default function App() {
             <div className="flex items-center gap-3">
               <div>
                 <h1 className="text-xl font-bold text-gray-100 tracking-tight">another habit tracker</h1>
-                {quote && <p className="text-gray-500 text-xs italic mt-0.5">"{quote}"</p>}
+                {quote && <p className="text-gray-500 text-xs italic mt-0.5">{quote}</p>}
               </div>
               {saving && <Loader2 size={14} className="text-accent-blue animate-spin" />}
               {error && <span className="text-red-400 text-xs">{error}</span>}
