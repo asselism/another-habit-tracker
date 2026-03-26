@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "vite build && echo '' > dist/.gitignore && gh-pages -d dist --dotfiles"
+    "deploy": "vite build && echo '' > dist/.gitignore && npx gh-pages -d dist"
   },
   "dependencies": {
     "lucide-react": "^1.7.0",
