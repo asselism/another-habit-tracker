@@ -21,8 +21,9 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
     rawDate: date,
   }))
 
-  const average = chartData.length
-    ? (chartData.reduce((sum, d) => sum + d.value, 0) / chartData.length).toFixed(1)
+  const nonEmpty = chartData.filter(d => d.value > 0)
+  const average = nonEmpty.length
+    ? (nonEmpty.reduce((sum, d) => sum + d.value, 0) / nonEmpty.length).toFixed(1)
     : 0
 
   function handleBarClick(barData) {
