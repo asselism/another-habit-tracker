@@ -1,5 +1,12 @@
+function toLocalDateStr(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 export function getToday() {
-  return new Date().toISOString().split('T')[0]
+  return toLocalDateStr(new Date())
 }
 
 export function getWeekDates(referenceDate = new Date()) {
@@ -11,7 +18,7 @@ export function getWeekDates(referenceDate = new Date()) {
   return Array.from({ length: 7 }, (_, i) => {
     const date = new Date(monday)
     date.setDate(monday.getDate() + i)
-    return date.toISOString().split('T')[0]
+    return toLocalDateStr(date)
   })
 }
 
@@ -23,7 +30,7 @@ export function getMonthDates(referenceDate = new Date()) {
 
   return Array.from({ length: daysInMonth }, (_, i) => {
     const date = new Date(year, month, i + 1)
-    return date.toISOString().split('T')[0]
+    return toLocalDateStr(date)
   })
 }
 
