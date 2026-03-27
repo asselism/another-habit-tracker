@@ -25,8 +25,6 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
     ? (chartData.reduce((sum, d) => sum + d.value, 0) / chartData.length).toFixed(1)
     : 0
 
-  const todayValue = data[today] ?? 0
-
   function handleBarClick(barData) {
     if (!isAuthed) return
     const dateStr = barData.rawDate
@@ -56,8 +54,8 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-gray-100 font-semibold text-lg">{todayValue}</p>
-          <p className="text-gray-500 text-xs">today · avg {average}</p>
+          <p className="text-gray-100 font-semibold text-lg">{average}</p>
+          <p className="text-gray-500 text-xs">avg {habit.unit}</p>
         </div>
       </div>
 
