@@ -1,4 +1,4 @@
-import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell } from 'lucide-react'
+import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell, Bike } from 'lucide-react'
 
 export const CATEGORIES = ['Health', 'Hobbies', 'Learning']
 
@@ -15,7 +15,6 @@ export const HABITS = [
     id: 'solidcore',
     name: '[solidcore]',
     unit: 'sessions',
-    type: 'check',
     icon: Dumbbell,
     color: '#f43f5e',
     category: 'Health',
@@ -40,10 +39,17 @@ export const HABITS = [
     id: 'kayaking',
     name: 'Kayaking',
     unit: 'voyages',
-    type: 'check',
     icon: Waves,
     color: '#4cc9f0',
     category: 'Hobbies',
+  },
+  {
+    id: 'cycling',
+    name: 'Cycling',
+    unit: 'sessions',
+    icon: Bike,
+    color: '#38bdf8',
+    category: 'Health',
   },
   {
     id: 'articles',
