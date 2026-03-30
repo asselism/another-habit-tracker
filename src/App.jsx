@@ -14,6 +14,7 @@ import HabitCard from './components/HabitCard'
 import QuickEntry from './components/QuickEntry'
 import AuthGate from './components/AuthGate'
 import DataManager from './components/DataManager'
+import Challenges from './components/Challenges'
 
 export default function App() {
   const [data, setData] = useState({})
@@ -174,6 +175,7 @@ export default function App() {
           </div>
         ) : (
           <div className="space-y-10">
+            <Challenges />
             {CATEGORIES.map(category => {
               const categoryHabits = HABITS.filter(h => h.category === category)
               if (!categoryHabits.length) return null
