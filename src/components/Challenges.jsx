@@ -1,4 +1,4 @@
-import { Trophy, CheckCircle2 } from 'lucide-react'
+import { Trophy, CheckCircle2, Clock } from 'lucide-react'
 
 const CHALLENGES = [
   {
@@ -13,10 +13,16 @@ const CHALLENGES = [
     title: 'Go to [solidcore] for 14 days in a row',
     status: 'completed',
   },
+  {
+    id: 'monochrome-fits-streak',
+    title: 'Wear a different monochrome fit every day for a week',
+    status: 'not started',
+  },
 ]
 
 export default function Challenges() {
   const active = CHALLENGES.filter(c => c.status === 'active')
+  const upcoming = CHALLENGES.filter(c => c.status === 'not started')
   const past = CHALLENGES.filter(c => c.status === 'completed')
 
   return (
@@ -34,6 +40,20 @@ export default function Challenges() {
             <div className="flex-1">
               <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
               <p className="text-amber-400 text-xs mt-0.5">In progress</p>
+            </div>
+          </div>
+        ))}
+        {upcoming.map(c => (
+          <div
+            key={c.id}
+            className="bg-surface-card rounded-2xl p-5 border border-blue-500/30 flex items-center gap-4"
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-500/20">
+              <Clock size={20} className="text-blue-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
+              <p className="text-blue-400 text-xs mt-0.5">Upcoming</p>
             </div>
           </div>
         ))}
