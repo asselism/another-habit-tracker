@@ -1,12 +1,13 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { formatDateLabel, getToday } from '../utils'
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
+  const entry = payload[0].payload
   return (
     <div className="bg-surface-card border border-gray-700 rounded-lg px-3 py-2 text-sm shadow-lg">
       <p className="text-gray-400">{label}</p>
-      <p className="text-gray-100 font-medium">{payload[0].value}</p>
+      <p className="text-gray-100 font-medium">{entry.value}</p>
     </div>
   )
 }
@@ -15,28 +16,28 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
   const Icon = habit.icon
   const today = getToday()
 
-  const chartData = dates.map(date => ({
-    date: formatDateLabel(date),
-    value: data[date] ?? 0,
-    rawDate: date,
-  }))
+  const chartData = dates.map(date => {
+    const value = data[date] ?? 0
+    return {
+      date: formatDateLabel(date),
+      value,
+      barValue: value || 0.15,
+      rawDate: date,
+    }
+  })
 
-  // Average over all days up to and including today
+  const isSum = habit.aggregate === 'sum'
   const elapsed = chartData.filter(d => d.rawDate <= today)
-  const average = elapsed.length
-    ? (elapsed.reduce((sum, d) => sum + d.value, 0) / elapsed.length).toFixed(1)
-    : 0
+  const total = elapsed.reduce((sum, d) => sum + d.value, 0)
+  const stat = isSum
+    ? total
+    : elapsed.length ? (total / elapsed.length).toFixed(1) : 0
 
   function handleBarClick(barData) {
     if (!isAuthed) return
     const dateStr = barData.rawDate
     const current = data[dateStr] ?? 0
-    const input = prompt(`${habit.name} for ${barData.date}\nCurrent: ${current} ${habit.unit}\nEnter new value:`, current)
-    if (input === null) return
-    const val = parseFloat(input)
-    if (!isNaN(val) && val >= 0) {
-      onUpdate(habit.id, dateStr, val)
-    }
+    onUpdate(habit.id, dateStr, current + 1)
   }
 
   return (
@@ -57,8 +58,8 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-gray-100 font-semibold text-lg">{average}</p>
-          <p className="text-gray-500 text-xs">avg {habit.unit}</p>
+          <p className="text-gray-100 font-semibold text-lg">{stat}</p>
+          <p className="text-gray-500 text-xs">{isSum ? 'total' : 'avg'} {habit.unit}</p>
         </div>
       </div>
 
@@ -81,13 +82,19 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
             />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
             <Bar
-              dataKey="value"
-              fill={habit.color}
+              dataKey="barValue"
               radius={[4, 4, 0, 0]}
-              opacity={0.8}
               cursor={isAuthed ? 'pointer' : 'default'}
               onClick={(_, index) => handleBarClick(chartData[index])}
-            />
+            >
+              {chartData.map((entry) => (
+                <Cell
+                  key={entry.rawDate}
+                  fill={habit.color}
+                  opacity={entry.value > 0 ? 0.8 : 0.2}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
