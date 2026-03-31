@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { formatDateLabel, getToday } from '../utils'
 
@@ -33,12 +34,43 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
     ? total
     : elapsed.length ? (total / elapsed.length).toFixed(1) : 0
 
+  const longPressTimer = useRef(null)
+  const longPressed = useRef(false)
+
   function handleBarClick(barData) {
+    if (!isAuthed || longPressed.current) return
+    if (isSum) {
+      const dateStr = barData.rawDate
+      const current = data[dateStr] ?? 0
+      onUpdate(habit.id, dateStr, current + 1)
+    } else {
+      handleBarEdit(barData)
+    }
+  }
+
+  function handleBarEdit(barData) {
     if (!isAuthed) return
     const dateStr = barData.rawDate
     const current = data[dateStr] ?? 0
-    onUpdate(habit.id, dateStr, current + 1)
+    const input = prompt(`${habit.name} for ${barData.date}\nCurrent: ${current} ${habit.unit}\nEnter new value:`, current)
+    if (input === null) return
+    const val = parseFloat(input)
+    if (!isNaN(val) && val >= 0) {
+      onUpdate(habit.id, dateStr, val)
+    }
   }
+
+  const handleMouseDown = useCallback((_, index) => {
+    longPressed.current = false
+    longPressTimer.current = setTimeout(() => {
+      longPressed.current = true
+      handleBarEdit(chartData[index])
+    }, 500)
+  }, [chartData, data, isAuthed])
+
+  const handleMouseUp = useCallback(() => {
+    clearTimeout(longPressTimer.current)
+  }, [])
 
   return (
     <div className="bg-surface-card rounded-2xl p-6 border border-gray-800/50 hover:border-gray-700/50 transition-colors">
@@ -86,6 +118,10 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
               radius={[4, 4, 0, 0]}
               cursor={isAuthed ? 'pointer' : 'default'}
               onClick={(_, index) => handleBarClick(chartData[index])}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onTouchStart={handleMouseDown}
+              onTouchEnd={handleMouseUp}
             >
               {chartData.map((entry) => (
                 <Cell
@@ -100,7 +136,7 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
       </div>
 
       {isAuthed && (
-        <p className="text-gray-600 text-xs mt-2 text-center">Click a bar to edit</p>
+        <p className="text-gray-600 text-xs mt-2 text-center">{isSum ? 'Tap +1 · Long press to edit' : 'Tap to edit'}</p>
       )}
     </div>
   )
