@@ -16,7 +16,7 @@ const CHALLENGES = [
   {
     id: 'monochrome-fits-streak',
     title: 'Wear a different monochrome fit every day for a week',
-    status: 'not started',
+    status: 'active',
   },
 ]
 
