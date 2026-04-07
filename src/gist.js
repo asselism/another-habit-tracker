@@ -1,6 +1,6 @@
 const GIST_FILE = 'habits.json'
-export const HABITS_GIST_ID = '9f913c9d378f732a63f7f31368b1f74b'
-const QUOTES_GIST_ID = 'd861a7b8ce30a52344273e9ecaafe6f8'
+export const HABITS_GIST_ID = 'ba2cb630ca10ab7f8668fa8863935495'
+const QUOTES_GIST_ID = 'fc819d0675ae05e2d5da1df4975bd806'
 
 export async function fetchRandomQuote() {
   const res = await fetch(`https://api.github.com/gists/${QUOTES_GIST_ID}`, {
