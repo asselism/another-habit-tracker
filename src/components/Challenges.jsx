@@ -22,10 +22,10 @@ const CHALLENGES = [
       { date: '2026-04-06', day: 'Mon', color: 'Black', hex: '#000000' },
       { date: '2026-04-07', day: 'Tue', color: 'Maroon', hex: '#800000' },
       { date: '2026-04-08', day: 'Wed', color: 'Red', hex: '#dc2626' },
-      { date: '2026-04-09', day: 'Thu', color: 'Denim', hex: '#1d4ed8' },
+      { date: '2026-04-09', day: 'Thu', color: 'Denim', hex: '#4a6fa5', denim: true },
       { date: '2026-04-10', day: 'Fri', color: 'Yellow', hex: '#eab308' },
-      { date: '2026-04-11', day: 'Sat', color: 'Green', hex: '#16a34a' },
-      { date: '2026-04-12', day: 'Sun', color: 'Blue', hex: '#3b82f6' },
+      { date: '2026-04-11', day: 'Sat', color: 'Green', hex: '#4b5320' },
+      { date: '2026-04-12', day: 'Sun', color: 'Blue', hex: '#4a6fa5' },
     ],
   },
 ]
@@ -62,8 +62,28 @@ export default function Challenges() {
                         className={`flex flex-col items-center gap-1 ${isPast ? 'opacity-40' : ''}`}
                       >
                         <div
-                          className={`w-7 h-7 rounded-full ${isToday ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-card' : ''}`}
-                          style={{ backgroundColor: s.hex }}
+                          className={`w-7 h-7 rounded-full overflow-hidden ${isToday ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-card' : ''}`}
+                          style={{
+                            backgroundColor: s.hex,
+                            ...(s.denim && {
+                              backgroundImage: `
+                                repeating-linear-gradient(
+                                  135deg,
+                                  rgba(255,255,255,0.08) 0px,
+                                  rgba(255,255,255,0.08) 1px,
+                                  transparent 1px,
+                                  transparent 3px
+                                ),
+                                repeating-linear-gradient(
+                                  45deg,
+                                  rgba(0,0,0,0.1) 0px,
+                                  rgba(0,0,0,0.1) 1px,
+                                  transparent 1px,
+                                  transparent 4px
+                                )
+                              `,
+                            }),
+                          }}
                         />
                         <span className="text-[10px] text-gray-400">{s.day}</span>
                         <span className="text-[9px] text-gray-500">{s.color}</span>
