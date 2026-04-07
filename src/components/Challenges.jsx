@@ -62,12 +62,8 @@ export default function Challenges() {
                         className={`flex flex-col items-center gap-1 ${isPast ? 'opacity-40' : ''}`}
                       >
                         <div
-                          className="w-7 h-7 rounded-full border-2"
-                          style={{
-                            backgroundColor: s.hex,
-                            borderColor: isToday ? '#fbbf24' : s.hex,
-                            boxShadow: isToday ? '0 0 8px #fbbf24' : 'none',
-                          }}
+                          className={`w-7 h-7 rounded-full ${isToday ? 'ring-2 ring-white ring-offset-2 ring-offset-surface-card' : ''}`}
+                          style={{ backgroundColor: s.hex }}
                         />
                         <span className="text-[10px] text-gray-400">{s.day}</span>
                         <span className="text-[9px] text-gray-500">{s.color}</span>
