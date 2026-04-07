@@ -25,7 +25,7 @@ const CHALLENGES = [
       { date: '2026-04-09', day: 'Thu', color: 'Denim', hex: '#4a6fa5', denim: true },
       { date: '2026-04-10', day: 'Fri', color: 'Yellow', hex: '#eab308' },
       { date: '2026-04-11', day: 'Sat', color: 'Green', hex: '#4b5320' },
-      { date: '2026-04-12', day: 'Sun', color: 'Blue', hex: '#4a6fa5' },
+      { date: '2026-04-12', day: 'Sun', color: 'Blue', hex: '#1d4ed8' },
     ],
   },
 ]
