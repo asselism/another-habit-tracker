@@ -1,4 +1,5 @@
 import { Trophy, CheckCircle2, Clock } from 'lucide-react'
+import { getToday } from '../utils'
 
 const CHALLENGES = [
   {
@@ -17,6 +18,15 @@ const CHALLENGES = [
     id: 'monochrome-fits-streak',
     title: 'Wear a different monochrome fit every day for a week',
     status: 'active',
+    schedule: [
+      { date: '2026-04-06', day: 'Mon', color: 'Black', hex: '#000000' },
+      { date: '2026-04-07', day: 'Tue', color: 'Maroon', hex: '#800000' },
+      { date: '2026-04-08', day: 'Wed', color: 'Red', hex: '#dc2626' },
+      { date: '2026-04-09', day: 'Thu', color: 'Denim', hex: '#1d4ed8' },
+      { date: '2026-04-10', day: 'Fri', color: 'Yellow', hex: '#eab308' },
+      { date: '2026-04-11', day: 'Sat', color: 'Green', hex: '#16a34a' },
+      { date: '2026-04-12', day: 'Sun', color: 'Blue', hex: '#3b82f6' },
+    ],
   },
 ]
 
@@ -40,6 +50,32 @@ export default function Challenges() {
             <div className="flex-1">
               <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
               <p className="text-amber-400 text-xs mt-0.5">In progress</p>
+              {c.schedule && (
+                <div className="flex gap-2 mt-3 flex-wrap">
+                  {c.schedule.map(s => {
+                    const today = getToday()
+                    const isPast = s.date < today
+                    const isToday = s.date === today
+                    return (
+                      <div
+                        key={s.date}
+                        className={`flex flex-col items-center gap-1 ${isPast ? 'opacity-40' : ''}`}
+                      >
+                        <div
+                          className="w-7 h-7 rounded-full border-2"
+                          style={{
+                            backgroundColor: s.hex,
+                            borderColor: isToday ? '#fbbf24' : s.hex,
+                            boxShadow: isToday ? '0 0 8px #fbbf24' : 'none',
+                          }}
+                        />
+                        <span className="text-[10px] text-gray-400">{s.day}</span>
+                        <span className="text-[9px] text-gray-500">{s.color}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </div>
         ))}
