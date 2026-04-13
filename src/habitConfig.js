@@ -24,6 +24,8 @@ export const HABITS = [
     id: 'dance',
     name: 'Dance Practice',
     unit: 'min',
+    displayUnit: 'hours',
+    displayFactor: 1 / 60,
     icon: Music,
     color: '#f72585',
     category: 'Hobbies',

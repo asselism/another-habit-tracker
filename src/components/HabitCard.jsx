@@ -16,14 +16,18 @@ function CustomTooltip({ active, payload, label }) {
 export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
   const Icon = habit.icon
   const today = getToday()
+  const factor = habit.displayFactor || 1
+  const dUnit = habit.displayUnit || habit.unit
 
   const chartData = dates.map(date => {
-    const value = data[date] ?? 0
+    const raw = data[date] ?? 0
+    const value = +(raw * factor).toFixed(2)
     return {
       date: formatDateLabel(date),
       value,
       barValue: value || 0.15,
       rawDate: date,
+      rawValue: raw,
     }
   })
 
@@ -52,7 +56,7 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
     if (!isAuthed) return
     const dateStr = barData.rawDate
     const current = data[dateStr] ?? 0
-    const input = prompt(`${habit.name} for ${barData.date}\nCurrent: ${current} ${habit.unit}\nEnter new value:`, current)
+    const input = prompt(`${habit.name} for ${barData.date}\nCurrent: ${current} ${habit.unit}\nEnter new value (${habit.unit}):`, current)
     if (input === null) return
     const val = parseFloat(input)
     if (!isNaN(val) && val >= 0) {
@@ -85,13 +89,13 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
           </div>
           <div>
             <h3 className="text-gray-100 font-semibold text-sm">{habit.name}</h3>
-            <p className="text-gray-500 text-xs">{habit.unit}</p>
+            <p className="text-gray-500 text-xs">{dUnit}</p>
             {habit.subtitle && <p className="text-gray-600 text-xs italic">{habit.subtitle}</p>}
           </div>
         </div>
         <div className="text-right">
           <p className="text-gray-100 font-semibold text-lg">{stat}</p>
-          <p className="text-gray-500 text-xs">{isSum ? 'total' : 'avg'} {habit.unit}</p>
+          <p className="text-gray-500 text-xs">{isSum ? 'total' : 'avg'} {dUnit}</p>
         </div>
       </div>
 

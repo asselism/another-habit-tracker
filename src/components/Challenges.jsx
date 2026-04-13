@@ -17,7 +17,7 @@ const CHALLENGES = [
   {
     id: 'monochrome-fits-streak',
     title: 'Wear a different monochrome fit every day for a week',
-    status: 'active',
+    status: 'completed',
     schedule: [
       { date: '2026-04-06', day: 'Mon', color: 'Black', hex: '#000000' },
       { date: '2026-04-07', day: 'Tue', color: 'Maroon', hex: '#800000' },
