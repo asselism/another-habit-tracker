@@ -175,7 +175,7 @@ export default function App() {
           </div>
         ) : (
           <div className="space-y-10">
-            <Challenges />
+            <Challenges sleepData={data.sleep || {}} />
             {CATEGORIES.map(category => {
               const categoryHabits = HABITS.filter(h => h.category === category)
               if (!categoryHabits.length) return null
