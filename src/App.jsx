@@ -177,7 +177,9 @@ export default function App() {
           <div className="space-y-10">
             <Challenges sleepData={data.sleep || {}} />
             {CATEGORIES.map(category => {
-              const categoryHabits = HABITS.filter(h => h.category === category)
+              const categoryHabits = HABITS
+                .filter(h => h.category === category)
+                .filter(h => isAuthed || !h.staffOnly)
               if (!categoryHabits.length) return null
               return (
                 <section key={category}>

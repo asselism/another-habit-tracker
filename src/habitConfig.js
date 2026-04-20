@@ -29,6 +29,7 @@ export const HABITS = [
     icon: Music,
     color: '#f72585',
     category: 'Hobbies',
+    staffOnly: true,
   },
   {
     id: 'fit_checks',
@@ -66,6 +67,7 @@ export const HABITS = [
     icon: BookOpen,
     color: '#4ade80',
     category: 'Learning',
+    staffOnly: true,
   },
   {
     id: 'coffee_chats',
