@@ -6,19 +6,21 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   const entry = payload[0].payload
   return (
-    <div className="bg-surface-card border border-gray-700 rounded-lg px-3 py-2 text-sm shadow-lg">
+    <div className="bg-surface-card border border-gray-700 rounded-lg px-3 py-2 text-sm shadow-lg max-w-xs">
       <p className="text-gray-400">{label}</p>
       <p className="text-gray-100 font-medium">{entry.value}</p>
+      {entry.note && <p className="text-gray-400 text-xs italic mt-1 whitespace-pre-wrap">{entry.note}</p>}
     </div>
   )
 }
 
-export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
+export default function HabitCard({ habit, data, notes = {}, dates, isAuthed, onUpdate, onUpdateNote }) {
   const Icon = habit.icon
   const today = getToday()
   const factor = habit.displayFactor || 1
   const dUnit = habit.displayUnit || habit.unit
 
+  const isGlucose = habit.id.startsWith('glucose_')
   const chartData = dates.map(date => {
     const rawData = data[date]
     const hasData = rawData !== undefined && rawData !== null
@@ -30,6 +32,7 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
       rawDate: date,
       rawValue: rawData ?? 0,
       hasData,
+      note: notes[date] || null,
     }
   })
 
@@ -63,6 +66,13 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
     const val = parseFloat(input)
     if (!isNaN(val) && val >= 0) {
       onUpdate(habit.id, dateStr, val)
+    }
+    if (!isGlucose && onUpdateNote) {
+      const currentNote = notes[dateStr] || ''
+      const noteInput = prompt(`Optional note for ${barData.date} (leave blank to clear):`, currentNote)
+      if (noteInput !== null) {
+        onUpdateNote(habit.id, dateStr, noteInput.trim())
+      }
     }
   }
 

@@ -81,6 +81,21 @@ export default function App() {
     })
   }
 
+  function updateNote(habitId, date, note) {
+    setData(prev => {
+      const allNotes = prev.notes || {}
+      const habitNotes = { ...(allNotes[habitId] || {}) }
+      if (note) habitNotes[date] = note
+      else delete habitNotes[date]
+      const next = {
+        ...prev,
+        notes: { ...allNotes, [habitId]: habitNotes },
+      }
+      saveToGist(next)
+      return next
+    })
+  }
+
   function handleImport(imported, { removeDays = {} } = {}) {
     setData(prev => {
       const merged = { ...prev }
@@ -200,9 +215,11 @@ export default function App() {
                         key={habit.id}
                         habit={habit}
                         data={data[habit.id] || {}}
+                        notes={data.notes?.[habit.id] || {}}
                         dates={dates}
                         isAuthed={isAuthed}
                         onUpdate={updateEntry}
+                        onUpdateNote={updateNote}
                       />
                     ))}
                   </div>
