@@ -1,4 +1,4 @@
-import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell, Bike } from 'lucide-react'
+import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell, Bike, Activity, TrendingUp, Zap } from 'lucide-react'
 
 export const CATEGORIES = ['Health', 'Hobbies', 'Learning']
 
@@ -77,5 +77,35 @@ export const HABITS = [
     icon: Coffee,
     color: '#fb923c',
     category: 'Learning',
+  },
+  {
+    id: 'glucose_avg',
+    name: 'Avg Glucose',
+    unit: 'mg/dL',
+    icon: Activity,
+    color: '#a78bfa',
+    category: 'Health',
+    staffOnly: true,
+  },
+  {
+    id: 'glucose_tir',
+    name: 'Time in Range',
+    subtitle: '70–140 mg/dL',
+    unit: '%',
+    icon: TrendingUp,
+    color: '#34d399',
+    category: 'Health',
+    staffOnly: true,
+  },
+  {
+    id: 'glucose_excursions',
+    name: 'Glucose Excursions',
+    subtitle: 'times crossing above 140 mg/dL',
+    unit: 'excursions',
+    aggregate: 'sum',
+    icon: Zap,
+    color: '#fb7185',
+    category: 'Health',
+    staffOnly: true,
   },
 ]

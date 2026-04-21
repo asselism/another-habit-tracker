@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { HABITS, CATEGORIES } from './habitConfig'
 import { readGist, writeGist, fetchRandomQuote, HABITS_GIST_ID } from './gist'
+import { useLocalStorage } from './hooks/useLocalStorage'
 import {
   getWeekDates,
   getMonthDates,
@@ -17,7 +18,7 @@ import DataManager from './components/DataManager'
 import Challenges from './components/Challenges'
 
 export default function App() {
-  const [data, setData] = useState({})
+  const [data, setData] = useLocalStorage('habits_cache', {})
   const [isAuthed, setIsAuthed] = useState(false)
   const [view, setView] = useState('week')
   const [refDate, setRefDate] = useState(new Date())
@@ -36,10 +37,12 @@ export default function App() {
     fetchRandomQuote().then(q => { if (q) setQuote(q) })
   }, [])
 
-  // Load data from gist on mount
+  // Load data from gist on mount (overrides localStorage cache)
   useEffect(() => {
     readGist(HABITS_GIST_ID)
-      .then(setData)
+      .then(remote => {
+        if (remote && Object.keys(remote).length) setData(remote)
+      })
       .catch(() => setError('Failed to load data'))
       .finally(() => setLoading(false))
   }, [])
@@ -78,11 +81,18 @@ export default function App() {
     })
   }
 
-  function handleImport(imported) {
+  function handleImport(imported, { removeDays = {} } = {}) {
     setData(prev => {
       const merged = { ...prev }
       for (const [habitId, entries] of Object.entries(imported)) {
         merged[habitId] = { ...merged[habitId], ...entries }
+      }
+      for (const [habitId, dates] of Object.entries(removeDays)) {
+        if (merged[habitId] && dates.length) {
+          const clean = { ...merged[habitId] }
+          for (const d of dates) delete clean[d]
+          merged[habitId] = clean
+        }
       }
       saveToGist(merged)
       return merged

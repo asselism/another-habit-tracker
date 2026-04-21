@@ -20,23 +20,25 @@ export default function HabitCard({ habit, data, dates, isAuthed, onUpdate }) {
   const dUnit = habit.displayUnit || habit.unit
 
   const chartData = dates.map(date => {
-    const raw = data[date] ?? 0
-    const value = +(raw * factor).toFixed(2)
+    const rawData = data[date]
+    const hasData = rawData !== undefined && rawData !== null
+    const value = hasData ? +(rawData * factor).toFixed(2) : 0
     return {
       date: formatDateLabel(date),
       value,
       barValue: value || 0.15,
       rawDate: date,
-      rawValue: raw,
+      rawValue: rawData ?? 0,
+      hasData,
     }
   })
 
   const isSum = habit.aggregate === 'sum'
   const elapsed = chartData.filter(d => d.rawDate <= today)
-  const total = elapsed.reduce((sum, d) => sum + d.value, 0)
+  const withData = elapsed.filter(d => d.hasData)
   const stat = isSum
-    ? total
-    : elapsed.length ? (total / elapsed.length).toFixed(1) : 0
+    ? elapsed.reduce((sum, d) => sum + d.value, 0)
+    : withData.length ? (withData.reduce((sum, d) => sum + d.value, 0) / withData.length).toFixed(1) : 0
 
   const longPressTimer = useRef(null)
   const longPressed = useRef(false)
