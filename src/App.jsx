@@ -231,7 +231,7 @@ export default function App() {
       </main>
 
       {/* FAB for quick entry */}
-      {isAuthed && <QuickEntry data={data} onUpdate={updateEntry} />}
+      {isAuthed && <QuickEntry data={data} onUpdate={updateEntry} onUpdateNote={updateNote} />}
     </div>
   )
 }

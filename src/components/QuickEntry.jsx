@@ -3,15 +3,20 @@ import { Plus, X } from 'lucide-react'
 import { HABITS } from '../habitConfig'
 import { getToday } from '../utils'
 
-export default function QuickEntry({ data, onUpdate }) {
+export default function QuickEntry({ data, onUpdate, onUpdateNote }) {
   const [isOpen, setIsOpen] = useState(false)
   const [date, setDate] = useState(getToday())
+  const notes = data.notes || {}
 
   function handleSave(habitId, value) {
     const val = parseFloat(value)
     if (!isNaN(val) && val >= 0) {
       onUpdate(habitId, date, val)
     }
+  }
+
+  function handleSaveNote(habitId, note) {
+    onUpdateNote(habitId, date, note.trim())
   }
 
   if (!isOpen) {
@@ -48,38 +53,52 @@ export default function QuickEntry({ data, onUpdate }) {
           />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {HABITS.map(habit => {
             const Icon = habit.icon
+            const isGlucose = habit.id.startsWith('glucose_')
             const current = data[habit.id]?.[date] ?? ''
+            const currentNote = notes[habit.id]?.[date] || ''
             return (
-              <div key={habit.id} className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: habit.color + '20' }}
-                >
-                  <Icon size={16} style={{ color: habit.color }} />
+              <div key={habit.id} className="space-y-1.5">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: habit.color + '20' }}
+                  >
+                    <Icon size={16} style={{ color: habit.color }} />
+                  </div>
+                  <span className="text-gray-300 text-sm flex-1">{habit.name}</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder="0"
+                      defaultValue={current || ''}
+                      onBlur={e => handleSave(habit.id, e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          handleSave(habit.id, e.target.value)
+                          const next = e.target.closest('.space-y-3')?.querySelector(`input[type="number"]:not(:focus)`)
+                          next?.focus()
+                        }
+                      }}
+                      className="bg-surface border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 w-20 text-right focus:outline-none focus:border-accent-blue [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <span className="text-gray-500 text-xs w-12">{habit.unit}</span>
+                  </div>
                 </div>
-                <span className="text-gray-300 text-sm flex-1">{habit.name}</span>
-                <div className="flex items-center gap-2">
+                {!isGlucose && (
                   <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="0"
-                    defaultValue={current || ''}
-                    onBlur={e => handleSave(habit.id, e.target.value)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                        handleSave(habit.id, e.target.value)
-                        const next = e.target.closest('.space-y-4')?.querySelector(`input[type="number"]:not(:focus)`)
-                        next?.focus()
-                      }
-                    }}
-                    className="bg-surface border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 w-20 text-right focus:outline-none focus:border-accent-blue [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    type="text"
+                    placeholder="optional note..."
+                    defaultValue={currentNote}
+                    onBlur={e => handleSaveNote(habit.id, e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }}
+                    className="w-full ml-11 max-w-[calc(100%-2.75rem)] bg-surface/50 border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-500 focus:text-gray-100 focus:outline-none focus:border-accent-blue/50"
                   />
-                  <span className="text-gray-500 text-xs w-12">{habit.unit}</span>
-                </div>
+                )}
               </div>
             )
           })}
