@@ -38,10 +38,9 @@ export default function HabitCard({ habit, data, notes = {}, dates, isAuthed, on
 
   const isSum = habit.aggregate === 'sum'
   const elapsed = chartData.filter(d => d.rawDate <= today)
-  const withData = elapsed.filter(d => d.hasData)
   const stat = isSum
     ? elapsed.reduce((sum, d) => sum + d.value, 0)
-    : withData.length ? (withData.reduce((sum, d) => sum + d.value, 0) / withData.length).toFixed(1) : 0
+    : elapsed.length ? (elapsed.reduce((sum, d) => sum + d.value, 0) / elapsed.length).toFixed(1) : 0
 
   const longPressTimer = useRef(null)
   const longPressed = useRef(false)
