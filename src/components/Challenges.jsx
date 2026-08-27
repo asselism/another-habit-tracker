@@ -1,15 +1,19 @@
 import { Trophy, CheckCircle2, Clock, Moon } from 'lucide-react'
 import { getToday } from '../utils'
 
-function getAprilWeeks() {
+function getMonthWeeks(year, monthIdx) {
   const weeks = []
-  let d = new Date(2026, 3, 1) // Apr 1
+  let d = new Date(year, monthIdx, 1)
+  const lastDay = new Date(year, monthIdx + 1, 0).getDate()
   let week = []
-  while (d.getMonth() === 3) {
-    const dateStr = d.toISOString().slice(0, 10)
+  while (d.getMonth() === monthIdx) {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const dateStr = `${y}-${m}-${day}`
     const dayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]
     week.push({ date: dateStr, day: dayLabel, num: d.getDate() })
-    if (d.getDay() === 0 || d.getDate() === 30) {
+    if (d.getDay() === 0 || d.getDate() === lastDay) {
       weeks.push(week)
       week = []
     }
@@ -18,9 +22,9 @@ function getAprilWeeks() {
   return weeks
 }
 
-function SleepWeekTracker({ sleepData }) {
+function SleepWeekTracker({ sleepData, year, monthIdx }) {
   const today = getToday()
-  const weeks = getAprilWeeks()
+  const weeks = getMonthWeeks(year, monthIdx)
   const allDays = weeks.flat()
   const hitDays = allDays.filter(d => d.date <= today && (sleepData[d.date] || 0) >= 7).length
   const totalPast = allDays.filter(d => d.date <= today).length
@@ -80,9 +84,25 @@ const CHALLENGES = [
   {
     id: 'april-sleep',
     title: 'Sleep 7+ hours every night in April',
-    status: 'active',
+    status: 'partial',
+    result: '14/30 nights',
     startDate: '2026-04-01',
     endDate: '2026-04-30',
+  },
+  {
+    id: 'may-sleep',
+    title: 'Sleep 7+ hours every night in May',
+    status: 'partial',
+    result: '18/31 nights',
+    startDate: '2026-05-01',
+    endDate: '2026-05-31',
+  },
+  {
+    id: 'june-sleep',
+    title: 'Sleep 7+ hours every night in June',
+    status: 'active',
+    startDate: '2026-06-01',
+    endDate: '2026-06-30',
   },
   {
     id: 'solidcore-streak',
@@ -106,9 +126,11 @@ const CHALLENGES = [
 ]
 
 export default function Challenges({ sleepData }) {
+  const byDateDesc = (a, b) => (b.startDate || '').localeCompare(a.startDate || '')
   const active = CHALLENGES.filter(c => c.status === 'active')
   const upcoming = CHALLENGES.filter(c => c.status === 'not started')
-  const past = CHALLENGES.filter(c => c.status === 'completed')
+  const partial = CHALLENGES.filter(c => c.status === 'partial').sort(byDateDesc)
+  const past = CHALLENGES.filter(c => c.status === 'completed').sort(byDateDesc)
 
   return (
     <section className="mb-10">
@@ -125,7 +147,7 @@ export default function Challenges({ sleepData }) {
             <div className="flex-1 min-w-0">
               <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
               <p className="text-amber-400 text-xs mt-0.5">In progress</p>
-              {c.id === 'april-sleep' && <SleepWeekTracker sleepData={sleepData} />}
+              {c.id === 'june-sleep' && <SleepWeekTracker sleepData={sleepData} year={2026} monthIdx={5} />}
               {c.schedule && (
                 <div className="flex gap-2 mt-3 flex-wrap">
                   {c.schedule.map(s => {
@@ -182,6 +204,20 @@ export default function Challenges({ sleepData }) {
             <div className="flex-1">
               <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
               <p className="text-blue-400 text-xs mt-0.5">Upcoming</p>
+            </div>
+          </div>
+        ))}
+        {partial.map(c => (
+          <div
+            key={c.id}
+            className="bg-surface-card rounded-2xl p-5 border border-orange-500/30 flex items-center gap-4 opacity-80"
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-orange-500/20 shrink-0">
+              <CheckCircle2 size={20} className="text-orange-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-gray-100 font-semibold text-sm">{c.title}</p>
+              <p className="text-orange-400 text-xs mt-0.5">Partial · {c.result}</p>
             </div>
           </div>
         ))}
