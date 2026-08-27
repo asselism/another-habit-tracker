@@ -1,4 +1,4 @@
-import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell, Bike, Activity, TrendingUp, Zap } from 'lucide-react'
+import { Moon, BookOpen, Music, Coffee, Shirt, Waves, Dumbbell, Bike, Activity, TrendingUp, Zap, Clock, BedDouble } from 'lucide-react'
 
 export const CATEGORIES = ['Health', 'Hobbies', 'Learning']
 
@@ -13,7 +13,7 @@ export const HABITS = [
   },
   {
     id: 'solidcore',
-    name: '[solidcore]',
+    name: 'Strength Training',
     unit: 'sessions',
     aggregate: 'sum',
     icon: Dumbbell,
@@ -42,7 +42,7 @@ export const HABITS = [
   },
   {
     id: 'kayaking',
-    name: 'Kayaking',
+    name: 'Water Sports',
     unit: 'voyages',
     aggregate: 'sum',
     icon: Waves,
@@ -107,5 +107,26 @@ export const HABITS = [
     color: '#fb7185',
     category: 'Health',
     staffOnly: true,
+  },
+  {
+    id: 'on_time',
+    name: 'On Time',
+    subtitle: 'number of times I have been on time',
+    unit: 'times',
+    aggregate: 'sum',
+    icon: Clock,
+    color: '#a3a3a3',
+    category: 'Learning',
+    staffOnly: true,
+  },
+  {
+    id: 'early_bedtime',
+    name: 'Early Bedtime',
+    subtitle: 'number of times I have gone to bed early',
+    unit: 'times',
+    aggregate: 'sum',
+    icon: BedDouble,
+    color: '#8b5cf6',
+    category: 'Health',
   },
 ]
